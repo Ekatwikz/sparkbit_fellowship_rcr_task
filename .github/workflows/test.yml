@@ -1,0 +1,19 @@
+name: Python Tests
+run-name: Running Tests on ${{ github.actor }}'s ${{ github.event_name }} to ${{ github.ref_name }}
+on: [push]
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["pypy3.9", "pypy3.10", "3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pytest pytest-cov
+      - name: Test with pycov
+        run: pytest test_robotic_code_representation_generator.py --cov=robotic_code_representation_generator --verbose
